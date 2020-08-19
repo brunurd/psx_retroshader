@@ -1,4 +1,6 @@
-﻿Shader "psx/vertexlit" {
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "psx/vertexlit" {
 	Properties{
 		_MainTex("Base (RGB)", 2D) = "white" {}
 	}
@@ -7,6 +9,7 @@
 			LOD 200
 
 			Pass {
+			Name "0"
 			Lighting On
 				CGPROGRAM
 
@@ -32,7 +35,7 @@
 						v2f o;
 
 						//Vertex snapping
-						float4 snapToPixel = mul(UNITY_MATRIX_MVP,v.vertex);
+						float4 snapToPixel = UnityObjectToClipPos(v.vertex);
 						float4 vertex = snapToPixel;
 						vertex.xyz = snapToPixel.xyz / snapToPixel.w;
 						vertex.x = floor(160 * vertex.x) / 160;
@@ -45,7 +48,7 @@
 						o.color = float4(ShadeVertexLightsFull(v.vertex, v.normal, 4, true), 1.0);
 						o.color *= v.color;
 
-						float distance = length(mul(UNITY_MATRIX_MV,v.vertex));
+						float distance = length(UnityObjectToViewPos(v.vertex));
 
 						//Affine Texture Mapping
 						float4 affinePos = vertex; //vertex;				

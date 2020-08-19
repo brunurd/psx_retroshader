@@ -1,4 +1,6 @@
-﻿Shader "psx/trasparent/unlit" {
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "psx/trasparent/unlit" {
 	Properties{
 		_MainTex("Base (RGB)", 2D) = "white" {}
 	}
@@ -8,6 +10,7 @@
 		Blend SrcAlpha OneMinusSrcAlpha
 		Zwrite Off
 		Pass{
+		Name "0"
 		Lighting On
 		CGPROGRAM
 
@@ -33,7 +36,7 @@
 		v2f o;
 
 		//Vertex snapping
-		float4 snapToPixel = mul(UNITY_MATRIX_MVP,v.vertex);
+		float4 snapToPixel = UnityObjectToClipPos(v.vertex);
 		float4 vertex = snapToPixel;
 		vertex.xyz = snapToPixel.xyz / snapToPixel.w;
 		vertex.x = floor(160 * vertex.x) / 160;
@@ -44,7 +47,7 @@
 		//Vertex lighting 
 		o.color = v.color*UNITY_LIGHTMODEL_AMBIENT;
 
-		float distance = length(mul(UNITY_MATRIX_MV,v.vertex));
+		float distance = length(UnityObjectToViewPos(v.vertex));
 
 		//Affine Texture Mapping
 		float4 affinePos = vertex;//vertex;				
